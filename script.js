@@ -39,5 +39,23 @@ function turn(squareId, player) {
 }
 
 function checkWin(board, player) {
-	let plays = board.reduce((a, e, i) => (e === player) ? a.concat(i) : a, []);
+	let plays = board.reduce((a, e, i) => (e === player) ? a.concat(i) : a, []);	//Find all places on the board that are already played on
+	let gameWon = null;
+	for (let [index, win] of winCombos.entries()) {
+		if (win.every(elem => plays.indexOf(elem) > -1)) {
+			gameWon = {index: index, player: player};
+			break;
+		}
+	}
+	return gameWon;
+}
+
+function gameOver(gameWon) {
+	for (let index of winCombos[gameWon.index]) {
+		document.getElementById(index).style.backgroundColor = gameWon.player == huPlayer ? "blue" : "red";
+	}
+	//again prevent the player form clicking on any other cell
+	for (var i =0; i < cells.length; i++) {
+		cells[i].removeEventListener('click', turnClick, false);
+	}
 }
