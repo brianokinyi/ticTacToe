@@ -37,7 +37,13 @@ function turnClick (square) {
 
 function turn(squareId, player) {
 	origBoard[squareId] = player;
-	document.getElementById(squareId).innerText = player;
+	if (player == aiPlayer) {
+		setTimeout(function() { 
+			document.getElementById(squareId).innerText = player
+		}, 500);
+	}else if (player == huPlayer){
+		document.getElementById(squareId).innerText = player
+	}
 	let gameWon = checkWin(origBoard, player);
 	if (gameWon)
 		gameOver(gameWon);
