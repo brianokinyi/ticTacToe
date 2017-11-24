@@ -27,7 +27,12 @@ function startGame() {
 startGame();
 
 function turnClick (square) {
-	turn(square.target.id, huPlayer);
+	//a player can only click on a spot that has not yet been clicked
+	if(typeof origBoard[square.target.id] == 'number') {	//Not yet clicked
+		turn(square.target.id, huPlayer);
+		if (!checkTie())
+			turn(bestSpot(), aiPlayer);	//best spot for ai player
+	}
 }
 
 function turn(squareId, player) {
@@ -58,4 +63,30 @@ function gameOver(gameWon) {
 	for (var i =0; i < cells.length; i++) {
 		cells[i].removeEventListener('click', turnClick, false);
 	}
+	declareWinner(gameWon.player == huPlayer ? "You win!" : "You lose!");
+}
+
+function declareWinner(who) {
+	document.querySelector(".endgame").style.display = "block";
+	document.querySelector(".endgame .text").innerText = who;
+}
+
+function emptySquares() {
+	return origBoard.filter(s => typeof s == 'number');	//empty squares
+}
+
+function bestSpot() {
+	return emptySquares()[0];	//First element in the empty squares
+}
+
+function checkTie() {
+	if (emptySquares().length == 0) {	//all places played
+		for (var i =0; i < cells.length; i++) {
+			cells[i].style.backgroundColor = 'green';
+			cells[i].removeEventListener('clik', turnClick, false);
+		}
+		declareWinner("Tie Game!");
+		return true;	//Its's true as a tie
+	}
+	return false;
 }
